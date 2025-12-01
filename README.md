@@ -15,10 +15,10 @@ Here's a quick guide to use this in your local system.
    python main.py
    ```
 
-4. Now in the default you want to import the model_peak_detect.py in the mport model option
+4. Now in the default you want to import the model_peak_detect.py in the import model option
 5. Then upload the data you want to visualize the peak for.
-
-
+6. If you select Daniel's Approach then you need to upload different model file(model_daniel_peak_detect.py).
+7. If you select Aman's approach a new window will open.
 
 ---
 
