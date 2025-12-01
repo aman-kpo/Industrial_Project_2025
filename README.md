@@ -10,8 +10,11 @@ Here's a quick guide to use this in your local system.
    ```
    pip install -r requirements.txt
    ```
-3. Now run the app.py file using the following command:
+3. Now run the main.py file using the following command:
    ```
-   python GUI.py
+   python main.py
    ```
+
+4. Now in the default you want to import the model_peak_detect.py in the mport model option
+5. Then upload the data you want to visualize the peak for.
 
