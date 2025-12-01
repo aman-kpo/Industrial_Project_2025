@@ -132,6 +132,11 @@ class Application(tk.Frame):
         # --- Aman's GUI variables ---
         self.aman_gui_var = tk.BooleanVar(value=False)
         self.aman_gui_process = None
+        
+        # --- Daniel's approach variables ---
+        self.daniel_approach_var = tk.BooleanVar(value=False)
+        self.daniel_peak_count_ch1 = 0
+        self.daniel_peak_count_ch2 = 0
 
         self.create_widgets()
         self.setup_plot()
@@ -184,6 +189,16 @@ class Application(tk.Frame):
             font=("Arial", 9, "bold")
         )
         self.aman_checkbox.pack(side="left", padx=10)
+        
+        # --- 6. Daniel's Approach Checkbox ---
+        self.daniel_checkbox = tk.Checkbutton(
+            self.top_bar, 
+            text="Daniel's approach", 
+            variable=self.daniel_approach_var,
+            bg="#f0f0f0",
+            font=("Arial", 9, "bold")
+        )
+        self.daniel_checkbox.pack(side="left", padx=10)
 
         # --- Time Display ---
         self.time_label = tk.Label(self.top_bar, text="Time: 00:00", font=("Helvetica", 12, "bold"), bg="#f0f0f0")
@@ -209,6 +224,24 @@ class Application(tk.Frame):
             l = tk.Label(f, text=f"{name}\n0", font=("Helvetica", 9, "bold"), bg=bg, width=12)
             l.pack(padx=2, pady=2)
             self.stat_labels[name] = l
+        
+        # --- Daniel's Approach Counters ---
+        self.daniel_counter_frame = ttk.Frame(self.bottom_area)
+        self.daniel_counter_frame.pack(side="top", pady=(10, 0))
+        
+        # ADC1 Counter
+        daniel_bg1 = "#B0E0E6"  # Light blue
+        f1 = tk.Frame(self.daniel_counter_frame, bg=daniel_bg1, bd=2, relief="solid")
+        f1.pack(side="left", padx=5)
+        self.daniel_label_ch1 = tk.Label(f1, text="Daniel ADC1\n0", font=("Helvetica", 10, "bold"), bg=daniel_bg1, width=14)
+        self.daniel_label_ch1.pack(padx=2, pady=2)
+        
+        # ADC2 Counter
+        daniel_bg2 = "#ADD8E6"  # Lighter blue
+        f2 = tk.Frame(self.daniel_counter_frame, bg=daniel_bg2, bd=2, relief="solid")
+        f2.pack(side="left", padx=5)
+        self.daniel_label_ch2 = tk.Label(f2, text="Daniel ADC2\n0", font=("Helvetica", 10, "bold"), bg=daniel_bg2, width=14)
+        self.daniel_label_ch2.pack(padx=2, pady=2)
 
         # --- Plot Area ---
         self.plot_frame = ttk.Frame(self)
@@ -415,6 +448,12 @@ class Application(tk.Frame):
         for lbl in self.stat_labels.values():
             original_text = lbl.cget('text').split('\n')[0] 
             lbl.config(text=f"{original_text}\n0")
+        
+        # Reset Daniel's counters
+        self.daniel_peak_count_ch1 = 0
+        self.daniel_peak_count_ch2 = 0
+        self.daniel_label_ch1.config(text="Daniel ADC1\n0")
+        self.daniel_label_ch2.config(text="Daniel ADC2\n0")
 
         # 3. タイマーとシークバーのリセット
         self.total_lines = 0
@@ -458,7 +497,14 @@ class Application(tk.Frame):
             while True:
                 item = self.peak_queue.get_nowait()
                 ch_id, px, py, label = item
-                if ch_id == 2:
+                
+                # Check if it's a Daniel's approach peak
+                if label.startswith("Daniel-"):
+                    if ch_id == 1:
+                        self.daniel_peak_count_ch1 += 1
+                    elif ch_id == 2:
+                        self.daniel_peak_count_ch2 += 1
+                elif ch_id == 2:
                     key = label if label in self.peak_data_ch2 else "Unknown"
                     self.peak_data_ch2[key]["x"].append(px)
                     self.peak_data_ch2[key]["y"].append(py)
@@ -483,6 +529,10 @@ class Application(tk.Frame):
         for name, lbl in self.stat_labels.items():
             if name in self.class_counts:
                 lbl.config(text=f"{name}\n{self.class_counts[name]}")
+        
+        # Update Daniel's counters
+        self.daniel_label_ch1.config(text=f"Daniel ADC1\n{self.daniel_peak_count_ch1}")
+        self.daniel_label_ch2.config(text=f"Daniel ADC2\n{self.daniel_peak_count_ch2}")
 
         # ライン描画更新
         if self.plot_data_ch1:
