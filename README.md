@@ -4,7 +4,7 @@
 Here's a quick guide to use this in your local system.
 1. Clone this repository using by typing the below code:
    ```
-   git clone https://github.com/aman06012003/Instrumento.git
+   git clone https://github.com/aman-kpo/Industrial_Project_2025.git
    ```
 2. Now install the required depencies to run the app using the following command:
    ```
