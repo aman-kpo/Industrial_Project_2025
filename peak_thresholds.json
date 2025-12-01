@@ -1,0 +1,18 @@
+{
+    "feature": "prominence",
+    "class_names": [
+        "Healthy-Big",
+        "Low-Small",
+        "Healthy-Small",
+        "Low-Big",
+        "High-Small",
+        "High-Big"
+    ],
+    "boundaries": [
+        55.5,
+        74.5,
+        132.0,
+        187.25,
+        396.75
+    ]
+}
